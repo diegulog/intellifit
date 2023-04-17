@@ -18,26 +18,21 @@ package com.diegulog.intellifit.movenet.camera
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageFormat
-import android.graphics.Matrix
-import android.graphics.Rect
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
+import android.graphics.*
+import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Size
 import android.view.Surface
 import android.view.SurfaceView
-import kotlinx.coroutines.suspendCancellableCoroutine
-import com.diegulog.intellifit.utils.VisualizationUtils
-import com.diegulog.intellifit.utils.YuvToRgbConverter
+import android.view.WindowManager
 import com.diegulog.intellifit.domain.entity.Person
 import com.diegulog.intellifit.movenet.ml.PoseClassifier
 import com.diegulog.intellifit.movenet.ml.PoseDetector
+import com.diegulog.intellifit.utils.VisualizationUtils
+import com.diegulog.intellifit.utils.YuvToRgbConverter
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.util.*
 import kotlin.coroutines.resume
@@ -53,7 +48,11 @@ class CameraSource(
         private var PREVIEW_HEIGHT = 480
 
         /** Threshold for confidence score. */
-        private const val MIN_CONFIDENCE = .2f
+        private const val MIN_CONFIDENCE = .5f
+
+        const val CAMERA_FACING_BACK = CameraCharacteristics.LENS_FACING_BACK
+        const val CAMERA_FACING_FRONT = CameraCharacteristics.LENS_FACING_FRONT
+
     }
 
     private val lock = Any()
@@ -88,18 +87,19 @@ class CameraSource(
     /** [Handler] corresponding to [imageReaderThread] */
     private var imageReaderHandler: Handler? = null
     private var cameraId: String = ""
+    private var facing = CAMERA_FACING_FRONT
+    private var rotationDegrees = 0f
 
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
-        val scMap = cameraManager.getCameraCharacteristics(cameraId).get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-        val previewSizes = scMap?.getOutputSizes(ImageReader::class.java)
-        Timber.d("previewSizes: ${previewSizes.contentToString()}")
-        previewSizes?.let {
-            val optimalSize = chooseVideoSize(it)
-            PREVIEW_WIDTH = optimalSize.width
-            PREVIEW_HEIGHT = optimalSize.height
-            Timber.d("optimalSize: $PREVIEW_WIDTH x $PREVIEW_HEIGHT")
+
+        chooseVideoSize()?.let {
+            PREVIEW_WIDTH = it.width
+            PREVIEW_HEIGHT = it.height
         }
+
+        Timber.d("optimalSize: $PREVIEW_WIDTH x $PREVIEW_HEIGHT")
+
         imageReader =
             ImageReader.newInstance(PREVIEW_WIDTH, PREVIEW_HEIGHT, ImageFormat.YUV_420_888, 3)
         imageReader?.setOnImageAvailableListener({ reader ->
@@ -116,7 +116,7 @@ class CameraSource(
                 yuvConverter.yuvToRgb(image, imageBitmap)
                 // Create rotated version for portrait display
                 val rotateMatrix = Matrix()
-                rotateMatrix.postRotate(90.0f)
+                rotateMatrix.postRotate(rotationDegrees)
 
                 val rotatedBitmap = Bitmap.createBitmap(
                     imageBitmap, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT,
@@ -140,18 +140,24 @@ class CameraSource(
         }
     }
 
-    private fun chooseVideoSize(choices: Array<Size>): Size {
-        for (size in choices) {
-            if (size.width == size.height * 16/9 && size.width <= 1280) { //size.getWidth() == size.getHeight() * 4 / 3 &&
+    private fun chooseVideoSize(): Size? {
+        val scMap = cameraManager.getCameraCharacteristics(cameraId)
+            .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+        val previewSizes = scMap?.getOutputSizes(ImageReader::class.java)
+        Timber.d("previewSizes: ${previewSizes.contentToString()}")
+        if (previewSizes.isNullOrEmpty()) return null
+
+        for (size in previewSizes) {
+            if (size.width == size.height * 16 / 9 && size.width <= 1280) { //size.getWidth() == size.getHeight() * 4 / 3 &&
                 return size
             }
         }
-        for (size in choices) {
+        for (size in previewSizes) {
             if (size.width > size.height && size.width <= 1280) {
                 return size
             }
         }
-        return choices[choices.size - 1]
+        return previewSizes.last()
     }
 
     private suspend fun createSession(targets: List<Surface>): CameraCaptureSession =
@@ -185,16 +191,14 @@ class CameraSource(
     fun prepareCamera() {
         for (cameraId in cameraManager.cameraIdList) {
             val characteristics = cameraManager.getCameraCharacteristics(cameraId)
-
-            // We don't use a front facing camera in this sample.
             val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
-            if (cameraDirection != null &&
-                cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
-            ) {
-                continue
+            if (cameraDirection != null && cameraDirection == this.facing) {
+                this.cameraId = cameraId
+                break
             }
-            this.cameraId = cameraId
         }
+        rotationDegrees = getRotationCompensation()
+
     }
 
     fun setDetector(detector: PoseDetector) {
@@ -329,6 +333,30 @@ class CameraSource(
             imageReaderHandler = null
         } catch (e: InterruptedException) {
             Timber.d(e.message.toString())
+        }
+    }
+
+    @Throws(CameraAccessException::class)
+    private fun getRotationCompensation(): Float {
+        // Get the device's current rotation relative to its "native" orientation.
+        // Then, from the ORIENTATIONS table, look up the angle the image must be
+        // rotated to compensate for the device's rotation.
+        val windowManager = surfaceView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val degrees = when (windowManager.defaultDisplay.rotation) {
+            Surface.ROTATION_0 -> 0
+            Surface.ROTATION_90 -> 90
+            Surface.ROTATION_180 -> 180
+            Surface.ROTATION_270 -> 270
+            else -> {
+                0
+            }
+        }
+        val sensorOrientation = cameraManager.getCameraCharacteristics(cameraId).get(CameraCharacteristics.SENSOR_ORIENTATION)!!
+
+        return if (this.facing == CameraCharacteristics.LENS_FACING_FRONT) {
+           (sensorOrientation + degrees) % 360f
+        } else { // back-facing
+            (sensorOrientation - degrees + 360) % 360f
         }
     }
 

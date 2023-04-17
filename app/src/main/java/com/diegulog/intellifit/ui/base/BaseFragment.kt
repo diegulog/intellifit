@@ -12,8 +12,6 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
 
     private var _binding: VB? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     protected val binding get() = _binding!!
 
     override fun onCreateView(

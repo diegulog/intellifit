@@ -14,7 +14,7 @@ limitations under the License.
 ==============================================================================
 */
 
-package com.diegulog.intellifit.ui
+package com.diegulog.intellifit.ui.base
 
 import android.Manifest
 import android.app.AlertDialog
@@ -38,16 +38,11 @@ import com.diegulog.intellifit.movenet.camera.CameraSource
 import com.diegulog.intellifit.databinding.FragmentCameraBinding
 import com.diegulog.intellifit.movenet.camera.CameraSourceListener
 import com.diegulog.intellifit.movenet.ml.*
-import com.diegulog.intellifit.ui.base.BaseFragment
 
 class CameraFragment : BaseFragment<FragmentCameraBinding>(){
 
-    /** Default pose estimation model is 1 (MoveNet Thunder)
-     * 0 == MoveNet Lightning model
-     * 1 == MoveNet Thunder model
-     * 2 == MoveNet MultiPose model
-     **/
-    private var modelPos = 0
+
+    private var modelType = ModelType.Lightning
 
     /** Default device is CPU */
     private var device = Device.CPU
@@ -129,25 +124,20 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>(){
         return "${pair.first} (${String.format("%.2f", pair.second)})"
     }
 
-    private fun isPoseClassifier() {
+    fun isPoseClassifier() {
         cameraSource?.setClassifier(if (isClassifyPose) PoseClassifier.create(requireActivity()) else null)
     }
 
 
     // Change model when app is running
-    private fun changeModel(position: Int) {
-        if (modelPos == position) return
-        modelPos = position
+    fun changeModel(modelType: ModelType) {
+        if (this.modelType == modelType) return
+        this.modelType = modelType
         createPoseEstimator()
     }
 
     // Change device (accelerator) type when app is running
-    private fun changeDevice(position: Int) {
-        val targetDevice = when (position) {
-            0 -> Device.CPU
-            1 -> Device.GPU
-            else -> Device.NNAPI
-        }
+    fun changeDevice(targetDevice: Device) {
         if (device == targetDevice) return
         device = targetDevice
         createPoseEstimator()
@@ -155,24 +145,7 @@ class CameraFragment : BaseFragment<FragmentCameraBinding>(){
 
 
     private fun createPoseEstimator() {
-        // For MoveNet MultiPose, hide score and disable pose classifier as the model returns
-        // multiple Person instances.
-        val poseDetector = when (modelPos) {
-            0 -> {
-                // MoveNet Lightning (SinglePose)
-                MoveNet.create( requireActivity(), device, ModelType.Lightning)
-            }
-            1 -> {
-                // MoveNet Thunder (SinglePose)
-                MoveNet.create( requireActivity(), device, ModelType.Thunder)
-            }
-            else -> {
-                null
-            }
-        }
-        poseDetector?.let { detector ->
-            cameraSource?.setDetector(detector)
-        }
+        cameraSource?.setDetector(MoveNet.create( requireActivity(), device, modelType))
     }
 
     private fun requestPermission() {

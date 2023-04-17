@@ -1,6 +1,7 @@
-package com.diegulog.intellifit.data.repository.local.database
+package com.diegulog.intellifit.data.repository.local.database.capture
 
 import android.graphics.PointF
+import com.diegulog.intellifit.data.repository.local.database.DomainTranslatable
 import com.diegulog.intellifit.domain.entity.BodyPart
 import com.diegulog.intellifit.domain.entity.KeyPoint
 import io.realm.kotlin.types.RealmObject
@@ -20,7 +21,7 @@ class KeyPointEntity : RealmObject, DomainTranslatable<KeyPoint> {
     }
 
     companion object{
-        fun fromDomain(keyPoint: KeyPoint): KeyPointEntity{
+        fun fromDomain(keyPoint: KeyPoint): KeyPointEntity {
             return KeyPointEntity().apply {
                 bodyPart = keyPoint.bodyPart
                 coordinate = PointFEntity.fromDomain(keyPoint.coordinate)

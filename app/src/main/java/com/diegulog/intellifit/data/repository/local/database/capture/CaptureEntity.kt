@@ -1,8 +1,9 @@
-package com.diegulog.intellifit.data.repository.local.database
+package com.diegulog.intellifit.data.repository.local.database.capture
 
+import com.diegulog.intellifit.data.repository.local.database.DomainTranslatable
+import com.diegulog.intellifit.data.repository.local.database.toRealmList
 import com.diegulog.intellifit.domain.entity.Capture
 import com.diegulog.intellifit.domain.entity.MoveType
-import com.diegulog.intellifit.domain.entity.Person
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject

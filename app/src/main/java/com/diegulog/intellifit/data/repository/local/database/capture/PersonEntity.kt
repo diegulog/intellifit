@@ -1,5 +1,7 @@
-package com.diegulog.intellifit.data.repository.local.database
+package com.diegulog.intellifit.data.repository.local.database.capture
 
+import com.diegulog.intellifit.data.repository.local.database.DomainTranslatable
+import com.diegulog.intellifit.data.repository.local.database.toRealmList
 import com.diegulog.intellifit.domain.entity.Person
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
@@ -19,7 +21,7 @@ class PersonEntity : RealmObject, DomainTranslatable<Person> {
         return Person(id = id, keyPoints = keyPoints.map { it.toDomain()}, score = score, timestamp = timestamp)
     }
     companion object{
-        fun fromDomain(person: Person): PersonEntity{
+        fun fromDomain(person: Person): PersonEntity {
             return PersonEntity().apply {
                 id = person.id
                 keyPoints = person.keyPoints.map { KeyPointEntity.fromDomain(it) }.toRealmList()

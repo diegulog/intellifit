@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.diegulog.intellifit.ui.FirstFragment"
+        android:name="com.diegulog.intellifit.ui.HomeFragment"
         android:label="@string/home_fragment_label"
         tools:layout="@layout/fragment_home">
 
         <action
-            android:id="@+id/action_FirstFragment_to_CameraFragment"
-            app:destination="@id/CameraFragment" />
+            android:id="@+id/action_FirstFragment_to_CaptureFragment"
+            app:destination="@id/CaptureFragment" />
     </fragment>
     <fragment
-        android:id="@+id/CameraFragment"
-        android:name="com.diegulog.intellifit.ui.CameraFragment"
+        android:id="@+id/CaptureFragment"
+        android:name="com.diegulog.intellifit.ui.capture.CaptureFragment"
         android:label="@string/camera_fragment_label"
-        tools:layout="@layout/fragment_camera">
+        tools:layout="@layout/fragment_capture">
 
         <action
-            android:id="@+id/action_CameraFragment_to_FirstFragment"
+            android:id="@+id/action_CaptureFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>
