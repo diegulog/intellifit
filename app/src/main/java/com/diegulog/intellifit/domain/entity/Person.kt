@@ -21,5 +21,5 @@ data class Person(
     var id: String = "-1",
     val keyPoints: List<KeyPoint>,
     val score: Float,
-    val timestamp: Long = System.currentTimeMillis()
+    var timestamp: Long = System.currentTimeMillis()
 )

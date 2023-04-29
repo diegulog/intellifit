@@ -1,7 +1,7 @@
 package com.diegulog.intellifit.domain.entity
 
 data class Capture(
-    val id: String,
+    val id: String? = null,
     val persons: List<Person>,
     val videoPath: String,
     val moveType: MoveType,

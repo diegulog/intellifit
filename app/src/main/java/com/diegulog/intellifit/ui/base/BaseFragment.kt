@@ -27,7 +27,7 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
         _binding = null
     }
 
-    protected fun showToast(message: String) {
+    protected fun showMessage(message: String) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
     }
     abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): VB

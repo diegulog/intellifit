@@ -36,7 +36,6 @@ class CaptureEntity : RealmObject, DomainTranslatable<Capture> {
     companion object {
         fun fromDomain(capture: Capture): CaptureEntity {
             return CaptureEntity().apply {
-                id = capture.id
                 persons = capture.persons.map { PersonEntity.fromDomain(it) }.toRealmList()
                 videoPath = capture.videoPath
                 moveType = capture.moveType

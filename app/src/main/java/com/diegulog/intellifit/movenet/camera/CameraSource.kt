@@ -87,7 +87,7 @@ class CameraSource(
     /** [Handler] corresponding to [imageReaderThread] */
     private var imageReaderHandler: Handler? = null
     private var cameraId: String = ""
-    private var facing = CAMERA_FACING_FRONT
+    private var facing = CAMERA_FACING_BACK
     private var rotationDegrees = 0f
 
     suspend fun initCamera() {
