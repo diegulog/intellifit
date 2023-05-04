@@ -21,8 +21,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.diegulog.intellifit.domain.entity.BodyPart
-import com.diegulog.intellifit.domain.entity.Person
-import kotlin.math.max
+import com.diegulog.intellifit.domain.entity.Sample
 
 object VisualizationUtils {
     /** Radius of circle used to draw keypoints.  */
@@ -60,7 +59,7 @@ object VisualizationUtils {
     // Draw line and point indicate body pose
     fun drawBodyKeypoints(
         input: Bitmap,
-        persons: List<Person>): Bitmap {
+        samples: List<Sample>): Bitmap {
         val paintCircle = Paint().apply {
             strokeWidth = CIRCLE_RADIUS
             color = Color.RED
@@ -80,7 +79,7 @@ object VisualizationUtils {
 
         val output = input.copy(Bitmap.Config.ARGB_8888, true)
         val originalSizeCanvas = Canvas(output)
-        persons.forEach { person ->
+        samples.forEach { person ->
             // draw person id if tracker is enable
             bodyJoints.forEach {
                 val pointA = person.keyPoints[it.first.position].coordinate

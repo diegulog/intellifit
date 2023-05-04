@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">IntelliFit</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="home_fragment_label">IntelliFit</string>

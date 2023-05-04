@@ -27,7 +27,7 @@ import android.util.Size
 import android.view.Surface
 import android.view.SurfaceView
 import android.view.WindowManager
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.movenet.ml.PoseClassifier
 import com.diegulog.intellifit.movenet.ml.PoseDetector
 import com.diegulog.intellifit.utils.VisualizationUtils
@@ -258,16 +258,16 @@ class CameraSource(
 
     // process image
     private fun processImage(bitmap: Bitmap) {
-        val persons = mutableListOf<Person>()
+        val samples = mutableListOf<Sample>()
         var classificationResult: List<Pair<String, Float>>? = null
 
         synchronized(lock) {
             detector?.estimatePoses(bitmap)?.let {
-                persons.addAll(it)
+                samples.addAll(it)
                 // if the model only returns one item, allow running the Pose classifier.
-                if (persons.isNotEmpty()) {
+                if (samples.isNotEmpty()) {
                     classifier?.run {
-                        classificationResult = classify(persons[0])
+                        classificationResult = classify(samples[0])
                     }
                 }
             }
@@ -279,18 +279,18 @@ class CameraSource(
         }
 
         // if the model returns only one item, show that item's score.
-        if (persons.isNotEmpty()) {
-            listener?.onDetected(persons[0])
+        if (samples.isNotEmpty()) {
+            listener?.onDetected(samples[0])
             //listener?.onDetectedInfo(persons[0].score, classificationResult)
         }
-        visualize(persons, bitmap)
+        visualize(samples, bitmap)
     }
 
-    private fun visualize(persons: List<Person>, bitmap: Bitmap) {
+    private fun visualize(samples: List<Sample>, bitmap: Bitmap) {
 
         val outputBitmap = VisualizationUtils.drawBodyKeypoints(
             bitmap,
-            persons.filter { it.score > MIN_CONFIDENCE }
+            samples.filter { it.score > MIN_CONFIDENCE }
         )
 
         val holder = surfaceView.holder

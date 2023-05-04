@@ -1,9 +1,9 @@
 package com.diegulog.intellifit.movenet.camera
 
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 
 interface CameraSourceListener {
     fun onFPSListener(fps: Int)
-    fun onDetected(person: Person)
+    fun onDetected(sample: Sample)
 
 }

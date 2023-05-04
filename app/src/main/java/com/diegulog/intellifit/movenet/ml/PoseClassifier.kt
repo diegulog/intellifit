@@ -18,7 +18,7 @@ package com.diegulog.intellifit.movenet.ml
 
 import android.content.Context
 import org.tensorflow.lite.Interpreter
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 import org.tensorflow.lite.support.common.FileUtil
 
 class PoseClassifier(
@@ -48,10 +48,10 @@ class PoseClassifier(
         }
     }
 
-    fun classify(person: Person?): List<Pair<String, Float>> {
+    fun classify(sample: Sample?): List<Pair<String, Float>> {
         // Preprocess the pose estimation result to a flat array
         val inputVector = FloatArray(input[1])
-        person?.keyPoints?.forEachIndexed { index, keyPoint ->
+        sample?.keyPoints?.forEachIndexed { index, keyPoint ->
             inputVector[index * 3] = keyPoint.coordinate.y
             inputVector[index * 3 + 1] = keyPoint.coordinate.x
             inputVector[index * 3 + 2] = keyPoint.score

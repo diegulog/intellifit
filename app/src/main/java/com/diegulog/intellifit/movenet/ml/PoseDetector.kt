@@ -17,11 +17,11 @@ limitations under the License.
 package com.diegulog.intellifit.movenet.ml
 
 import android.graphics.Bitmap
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 
 interface PoseDetector : AutoCloseable {
 
-    fun estimatePoses(bitmap: Bitmap): List<Person>
+    fun estimatePoses(bitmap: Bitmap): List<Sample>
 
     fun lastInferenceTimeNanos(): Long
 }

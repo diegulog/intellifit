@@ -6,7 +6,9 @@ import com.diegulog.intellifit.domain.entity.Capture
 import kotlinx.coroutines.flow.Flow
 
 interface DataBaseRepository {
-    fun saveCapture(capture: Capture): Flow<ResultOf<Capture>>
+    suspend fun saveCapture(capture: Capture)
+    suspend fun deleteCapture(capture: Capture)
+
     fun getCaptures(): Flow<ResultOf<List<Capture>>>
-    fun getCapture(id: String): Flow<ResultOf<Capture?>>
+    fun getCapture(id: Long): Flow<ResultOf<Capture?>>
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.diegulog.intellifit.domain.entity.BodyPart
 import com.diegulog.intellifit.domain.entity.Capture
 import com.diegulog.intellifit.domain.entity.MoveType
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.utils.SoundPlayer
 import com.diegulog.intellifit.utils.reduceList
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +42,7 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
     private val _info = Channel<String>(Channel.BUFFERED)
     val info = _info.receiveAsFlow().asLiveData()
 
-    private val personTemp = ConcurrentLinkedQueue<Person>()
+    private val sampleTemp = ConcurrentLinkedQueue<Sample>()
 
     fun startCapture(duration: Int = captureDuration){
         _isCapture.value = true
@@ -54,7 +54,7 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
             var time = duration + prepareTime
             _message.value = "STOP"
             sleep(1000)
-            personTemp.clear()
+            sampleTemp.clear()
             timer = timer(period = 1000) {
                 Timber.d("time: $time")
                 when {
@@ -71,7 +71,7 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
                     //finalizamos captura
                     time == 0 && _isCapture.value -> {
                         this.cancel()
-                        saveActualCapture(duration, personTemp.map { it.copy() })
+                        saveActualCapture(duration, sampleTemp.map { it.copy() })
                         //Reiniciamos la captura
                         capture(duration)
                     }
@@ -81,22 +81,22 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
         }
     }
 
-    private fun saveActualCapture(duration: Int, personTemp: List<Person>) =
+    private fun saveActualCapture(duration: Int, sampleTemp: List<Sample>) =
         viewModelScope.launch(Dispatchers.IO) {
-            if (personTemp.isEmpty()) return@launch // nada que guardar
-            Timber.d("personTemp = ${personTemp.size}")
+            if (sampleTemp.isEmpty()) return@launch // nada que guardar
+            Timber.d("personTemp = ${sampleTemp.size}")
 
-            val firstTime = personTemp.first().timestamp
+            val firstTime = sampleTemp.first().timestamp
             //que los tiempos inicien en 0
-            personTemp.map { it.timestamp -= firstTime }
+            sampleTemp.map { it.timestamp -= firstTime }
 
-            val lastTime = personTemp.last().timestamp
+            val lastTime = sampleTemp.last().timestamp
             //Guardamos los primeros segundos de la captura como incorrect cuando la cuenta atras empieza
             val incorrect =
-                personTemp.filter { it.timestamp <= duration * 1000 }
+                sampleTemp.filter { it.timestamp <= duration * 1000 }
                     .reduceList(framesForSeconds * duration)
             //Guardamos los ultimos segundos de la captura como correctp
-            val correct = personTemp.filter { it.timestamp > lastTime - duration * 1000 }
+            val correct = sampleTemp.filter { it.timestamp > lastTime - duration * 1000 }
                 .reduceList(framesForSeconds * duration)
             
             Timber.d("incorrect = ${incorrect.size}")
@@ -107,14 +107,14 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
             ) {
                 captures.add(
                     Capture(
-                        persons = incorrect,
+                        samples = incorrect,
                         videoPath = "",
                         moveType = MoveType.INCORRECT
                     )
                 )
                 captures.add(
                     Capture(
-                        persons = correct,
+                        samples = correct,
                         videoPath = "",
                         moveType = MoveType.CORRECT
                     )
@@ -142,7 +142,7 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
             "${it.name}_x,${it.name}_y,${it.name}_score" }
             .joinToString()).append(",class\n")
         captures.forEachIndexed { index, capture ->
-            capture.persons.forEach { person ->
+            capture.samples.forEach { person ->
                 builder.append(index).append(",")
                 val inputVector = FloatArray(51)
                 person.keyPoints.forEachIndexed { index, keyPoint ->
@@ -161,9 +161,9 @@ class CaptureViewModel(private val context: Context, private val soundPlayer: So
 
     }
 
-    fun addPerson(person: Person) {
+    fun addPerson(sample: Sample) {
         if (_isCapture.value ) {
-            personTemp.add(person)
+            sampleTemp.add(sample)
         }
     }
 

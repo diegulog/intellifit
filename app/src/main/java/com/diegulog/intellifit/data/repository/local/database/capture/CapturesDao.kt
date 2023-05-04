@@ -1,27 +1,18 @@
 package com.diegulog.intellifit.data.repository.local.database.capture
 
-import com.diegulog.intellifit.data.repository.local.database.Dao
-import io.realm.kotlin.Realm
-import io.realm.kotlin.ext.query
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
 
-class CapturesDao(private val realm: Realm) : Dao<CaptureEntity> {
-
-    override suspend fun get(id: String): CaptureEntity? {
-        return realm.query<CaptureEntity>("id == $0", id).first().find()
-    }
-
-    override suspend fun getAll(): List<CaptureEntity> {
-        return realm.query<CaptureEntity>().find().toList()
-    }
-
-    override suspend fun delete(entity: CaptureEntity) {
-        realm.write {
-            this.delete(entity)
-        }
-    }
-    override suspend fun save(entity: CaptureEntity): CaptureEntity {
-        return realm.write {
-            this.copyFromRealm(entity)
-        }
-    }
+@Dao
+interface CapturesDao{
+    @Query("SELECT * FROM capture WHERE id = :id")
+    fun get(id: Long): CaptureEntity?
+    @Query("SELECT * FROM capture")
+    fun getAll(): List<CaptureEntity>
+    @Delete
+    fun delete(entity: CaptureEntity)
+    @Insert
+    fun save(entity: CaptureEntity):Long
 }

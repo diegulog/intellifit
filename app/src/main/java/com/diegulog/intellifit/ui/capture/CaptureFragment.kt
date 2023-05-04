@@ -8,7 +8,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.diegulog.intellifit.R
 import com.diegulog.intellifit.databinding.FragmentCaptureBinding
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.movenet.camera.CameraSourceListener
 import com.diegulog.intellifit.ui.base.BaseFragment
 import com.diegulog.intellifit.ui.base.CameraFragment
@@ -67,8 +67,8 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(), CameraSourceList
         Timber.d("fps %s", fps)
     }
 
-    override fun onDetected(person: Person) {
-        captureViewModel.addPerson(person)
+    override fun onDetected(sample: Sample) {
+        captureViewModel.addPerson(sample)
     }
 
 }
