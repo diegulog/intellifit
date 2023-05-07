@@ -10,5 +10,10 @@
 
     <string name="start_capture">START CAPTURE</string>
     <string name="stop_capture">STOP CAPTURE</string>
+    <string name="discard">Discard</string>
+    <string name="incorrect">Incorrect</string>
+    <string name="correct">Correct</string>
+    <string name="delete">Delete</string>
+    <string name="pe_request_permission">This app needs camera permission.</string>
 
 </resources>

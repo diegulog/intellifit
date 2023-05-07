@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataBaseRepository {
     suspend fun saveCapture(capture: Capture)
+    suspend fun saveCapture(capture: List<Capture>)
+
     suspend fun deleteCapture(capture: Capture)
 
     fun getCaptures(): Flow<ResultOf<List<Capture>>>

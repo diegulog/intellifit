@@ -5,18 +5,26 @@ import com.diegulog.intellifit.data.repository.local.database.capture.CaptureEnt
 import com.diegulog.intellifit.domain.entity.Capture
 import com.diegulog.intellifit.domain.repository.DataBaseRepository
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 
 class DataBaseRepositoryImpl(private val appDatabase: AppDatabase) : DataBaseRepository {
 
     override suspend fun saveCapture(capture: Capture){
         val captureEntity = CaptureEntity.fromDomain(capture)
+        Timber.d("saveCapture:  %s", capture.toString())
         val idCapture = appDatabase.captureDao().save(captureEntity)
         capture.id = idCapture
         for (sample in captureEntity.samples) {
             sample.captureId = idCapture
         }
         appDatabase.sampleDao().save(captureEntity.samples)
+    }
+
+    override suspend fun saveCapture(capture: List<Capture>) {
+        capture.forEach {
+            saveCapture(it)
+        }
     }
 
     override suspend fun deleteCapture(capture: Capture) {

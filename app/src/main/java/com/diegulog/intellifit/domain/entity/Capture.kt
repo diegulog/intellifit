@@ -4,6 +4,6 @@ data class Capture(
     var id: Long = 0,
     val samples: List<Sample>,
     val videoPath: String,
-    val moveType: MoveType,
+    var moveType: MoveType,
     val timestamp: Long = System.currentTimeMillis()
 )

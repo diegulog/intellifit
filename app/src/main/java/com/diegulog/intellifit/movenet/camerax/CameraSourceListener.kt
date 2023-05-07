@@ -1,4 +1,4 @@
-package com.diegulog.intellifit.movenet.camera
+package com.diegulog.intellifit.movenet.camerax
 
 import com.diegulog.intellifit.domain.entity.Sample
 

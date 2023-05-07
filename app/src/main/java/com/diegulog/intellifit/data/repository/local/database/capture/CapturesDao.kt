@@ -8,11 +8,11 @@ import androidx.room.Query
 @Dao
 interface CapturesDao{
     @Query("SELECT * FROM capture WHERE id = :id")
-    fun get(id: Long): CaptureEntity?
+    suspend fun get(id: Long): CaptureEntity?
     @Query("SELECT * FROM capture")
-    fun getAll(): List<CaptureEntity>
+    suspend fun getAll(): List<CaptureEntity>
     @Delete
-    fun delete(entity: CaptureEntity)
+    suspend fun delete(entity: CaptureEntity)
     @Insert
-    fun save(entity: CaptureEntity):Long
+    suspend fun save(entity: CaptureEntity):Long
 }

@@ -22,7 +22,12 @@
         tools:layout="@layout/fragment_capture">
 
         <action
-            android:id="@+id/action_CaptureFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_CaptureFragment_to_VideoPreviewFragment"
+            app:destination="@id/VideoPreviewFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/VideoPreviewFragment"
+        android:name="com.diegulog.intellifit.ui.review.VideoPreviewFragment"
+        android:label="Select Capture"
+        tools:layout="@layout/fragment_video_preview"/>
 </navigation>
