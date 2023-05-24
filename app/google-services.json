@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "468212945828",
+    "project_id": "intellifit-b5c30",
+    "storage_bucket": "intellifit-b5c30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468212945828:android:9f1d26231d65f40260e731",
+        "android_client_info": {
+          "package_name": "com.diegulog.intellifit.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "468212945828-b0rgkrngkorkvpk6hh5hqdhl3k7b3rcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlcReyw7S2U9OL-g6IBh5fj-iWA9nQ6dE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "468212945828-b0rgkrngkorkvpk6hh5hqdhl3k7b3rcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

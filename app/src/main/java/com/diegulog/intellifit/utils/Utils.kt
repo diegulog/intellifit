@@ -1,9 +1,23 @@
 package com.diegulog.intellifit.utils
 
+import android.content.Context
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.diegulog.intellifit.BuildConfig
+import com.diegulog.intellifit.domain.entity.BodyPart
+import com.diegulog.intellifit.domain.entity.Capture
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.min
 import kotlin.math.roundToInt
 
 
+const val isDemo = BuildConfig.FLAVOR == "demo"
+
+fun ImageView.load(path:String){
+    Glide.with(this.context).load(path).into(this)
+}
 fun <T> List<T>.reduceList(targetSize: Int): List<T> {
     if (targetSize < 2) {
         throw IllegalArgumentException("El tamaño objetivo debe estar entre 2 y el tamaño de la lista original")
@@ -19,4 +33,32 @@ fun <T> List<T>.reduceList(targetSize: Int): List<T> {
         this[position]
     }
 
+}
+
+fun Capture.parseCsv(context: Context) {
+    val builder = StringBuilder()
+    //nombres de las columnas
+    builder.append(
+        BodyPart.values().joinToString { "${it.name}_x,${it.name}_y,${it.name}_score" })
+        .append(",class,class_name\n")
+    this.samples.forEach { person ->
+        val inputVector = FloatArray(51)
+        person.keyPoints.forEachIndexed { index, keyPoint ->
+            inputVector[index * 3] = keyPoint.coordinate.x
+            inputVector[index * 3 + 1] = keyPoint.coordinate.y
+            inputVector[index * 3 + 2] = keyPoint.score
+        }
+        builder.append(inputVector.joinToString { value -> value.toString() })
+        builder.append(",${this.moveType.ordinal},${this.moveType.name}\n")
+    }
+    val nameFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS", Locale.ROOT)
+    val file = File(
+         context.filesDir.path + File.separator + this.exerciseId,
+         "${this.moveType.name}-${this.id}-${
+            nameFormat.format(
+                Date()
+            )
+        }.csv"
+    )
+    file.writeText(builder.toString())
 }

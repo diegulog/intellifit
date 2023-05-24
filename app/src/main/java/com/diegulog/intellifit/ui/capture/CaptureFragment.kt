@@ -6,26 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.diegulog.intellifit.R
 import com.diegulog.intellifit.movenet.camerax.CameraXFragment
 import com.diegulog.intellifit.databinding.FragmentCaptureBinding
 import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.movenet.camerax.CameraSourceListener
 import com.diegulog.intellifit.ui.base.BaseFragment
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 
-class CaptureFragment : BaseFragment<FragmentCaptureBinding>(), CameraSourceListener,
+class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
     CaptureViewModel.VideoCaptureListener {
+    private val args: CaptureFragmentArgs by navArgs()
 
-    private val captureViewModel: CaptureViewModel by viewModel()
+    private val captureViewModel: CaptureViewModel by viewModel {
+        parametersOf(args.exercise)
+    }
+
     private lateinit var cameraFragment: CameraXFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cameraFragment = binding.cameraFragment.getFragment()
-        cameraFragment.cameraSourceListener = this
+        cameraFragment.cameraSourceListener = captureViewModel
         captureViewModel.isCapture.observe(viewLifecycleOwner) {
             binding.btnPlay.setText(if (it) R.string.stop_capture else R.string.start_capture)
             binding.btnPlay.icon = ContextCompat.getDrawable(
@@ -53,9 +61,14 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(), CameraSourceList
             if (captureViewModel.isCapture.value == false) {
                 captureViewModel.startCapture(videoCaptureListener = this)
             } else {
-                captureViewModel.stopCapture {
+                binding.btnPlay.isEnabled = false
+                lifecycleScope.launch {
+                    captureViewModel.stopCapture()
+                    binding.btnPlay.isEnabled = true
                     findNavController().navigate(R.id.action_CaptureFragment_to_VideoPreviewFragment)
                 }
+
+
             }
         }
     }
@@ -69,14 +82,6 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(), CameraSourceList
         container: ViewGroup?
     ): FragmentCaptureBinding {
         return FragmentCaptureBinding.inflate(inflater, container, false)
-    }
-
-    override fun onFPSListener(fps: Int) {
-        Timber.d("fps %s", fps)
-    }
-
-    override fun onDetected(sample: Sample) {
-        captureViewModel.addPerson(sample)
     }
 
     override fun onStartCapture(path: String) {

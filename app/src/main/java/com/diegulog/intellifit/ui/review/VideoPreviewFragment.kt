@@ -49,7 +49,11 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>() {
 
         binding.videoCounter.text = String.format("%s / %s Videos", corrects.size, totalVideos)
         val videoFile = File(corrects[0].videoPath)
-        val videoUri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.fileprovider", videoFile)
+        val videoUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.fileprovider",
+            videoFile
+        )
         binding.video.setVideoURI(videoUri)
         binding.video.isVisible = true
         binding.video.setOnTouchListener { _, _ ->
@@ -78,6 +82,9 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>() {
             processCaptures(corrects, incorrects, ::onSelectCorrect)
         }
         binding.incorrect.setOnClickListener {
+            //Para que los datos no se sobre entrenen en incorrectos
+            if (incorrects.isNotEmpty())
+                videoPreviewViewModel.deleteCapture(incorrects.removeAt(0))
             processCaptures(corrects, incorrects, ::onSelectIncorrect)
         }
         binding.delete.setOnClickListener {
@@ -92,8 +99,8 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>() {
         action: (Capture, Capture?) -> Unit
     ) {
         action(corrects[0], incorrects.getOrNull(0))
-        corrects.removeAt(0)
-        incorrects.removeAt(0)
+        if (corrects.isNotEmpty()) corrects.removeAt(0)
+        if (incorrects.isNotEmpty()) incorrects.removeAt(0)
         showListCaptures(corrects, incorrects)
     }
 
@@ -114,7 +121,7 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>() {
     }
 
     private fun sendCapture(capture: Capture) {
-        videoPreviewViewModel.parseCsv(capture)
+        videoPreviewViewModel.sendCapture(capture)
         videoPreviewViewModel.deleteCapture(capture)
     }
 

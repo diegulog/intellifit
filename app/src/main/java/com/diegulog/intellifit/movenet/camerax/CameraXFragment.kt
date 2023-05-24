@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.os.Process
 import android.view.LayoutInflater
@@ -34,7 +33,6 @@ import com.diegulog.intellifit.domain.entity.Device
 import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.movenet.ml.ModelType
 import com.diegulog.intellifit.movenet.ml.MoveNet
-import com.diegulog.intellifit.movenet.ml.PoseClassifier
 import com.diegulog.intellifit.movenet.ml.PoseDetector
 import com.diegulog.intellifit.ui.base.BaseFragment
 import com.diegulog.intellifit.utils.VisualizationUtils
@@ -49,13 +47,12 @@ import java.util.concurrent.Executors
 import com.diegulog.intellifit.R
 
 class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
-    private val MIN_CONFIDENCE = .5f
+
     private var modelType = ModelType.Lightning
     /** Default device is CPU */
     private var device = Device.CPU
     private val lock = Any()
     private var detector: PoseDetector? = null
-    private var classifier: PoseClassifier? = null
     private lateinit var imageBitmap: Bitmap
     private lateinit var yuvConverter: YuvToRgbConverter
     private lateinit var cameraExecutor: ExecutorService
@@ -64,18 +61,13 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
     private val cameraCapabilities = mutableListOf<CameraCapability>()
     private lateinit var videoCapture: VideoCapture<Recorder>
     private var currentRecording: Recording? = null
-    private var cameraIndex = 1
+    private var cameraIndex = CameraSelector.LENS_FACING_FRONT
     private var qualityIndex = DEFAULT_QUALITY_IDX
     private var audioEnabled = false
 
     private val mainThreadExecutor by lazy { ContextCompat.getMainExecutor(requireContext()) }
     private var enumerationDeferred:Deferred<Unit>? = null
-    var cameraCallback: CameraCallback? = null
-
-    interface CameraCallback {
-        fun onVideoSaved(path: Uri)
-        fun onError(message: String, cause: Throwable?)
-    }
+    var recordVideoListener: RecordVideoListener? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
     private var fpsTimer: Timer? = null
@@ -190,22 +182,15 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         } catch (exc: Exception) {
             // we are on main thread, let's reset the controls on the UI.
             Timber.e("Use case binding failed", exc)
-            cameraCallback?.onError("Use case binding failed", exc)
+            recordVideoListener?.onError("Use case binding failed", exc)
         }
     }
     private fun processImage(bitmap: Bitmap) {
         val samples = mutableListOf<Sample>()
-        var classificationResult: List<Pair<String, Float>>? = null
-
         synchronized(lock) {
             detector?.estimatePoses(bitmap)?.let {
                 samples.addAll(it)
                 // if the model only returns one item, allow running the Pose classifier.
-                if (samples.isNotEmpty()) {
-                    classifier?.run {
-                        classificationResult = classify(samples[0])
-                    }
-                }
             }
         }
         frameProcessedInOneSecondInterval++
@@ -216,7 +201,9 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
 
         // if the model returns only one item, show that item's score.
         if (samples.isNotEmpty()) {
-            cameraSourceListener?.onDetected(samples[0])
+            if(samples[0].score > MIN_CONFIDENCE){
+                cameraSourceListener?.onDetected(samples[0])
+            }
             //listener?.onDetectedInfo(persons[0].score, classificationResult)
         }
         visualize(samples, bitmap)
@@ -272,16 +259,6 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         }
     }
 
-    fun setClassifier(classifier: PoseClassifier?) {
-        synchronized(lock) {
-            if (this.classifier != null) {
-                this.classifier?.close()
-                this.classifier = null
-            }
-            this.classifier = classifier
-        }
-    }
-
     @SuppressLint("MissingPermission")
     fun startVideoRecording(outFile: File) {
 
@@ -297,7 +274,7 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
                     // display the captured video
                     lifecycleScope.launch {
                         Timber.i("Video File : ${event.outputResults.outputUri.path}")
-                        cameraCallback?.onVideoSaved(event.outputResults.outputUri)
+                        recordVideoListener?.onVideoSaved(event.outputResults.outputUri)
                     }
                 }
             }
@@ -341,11 +318,7 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
      *          odd number:   CameraSelector.LENS_FACING_FRONT
      */
     private fun getCameraSelector(idx: Int) : CameraSelector {
-        if (cameraCapabilities.size == 0) {
-            Timber.i( "Error: This device does not have any camera, bailing out")
-            requireActivity().finish()
-        }
-        return (cameraCapabilities[idx].camSelector)
+        return CameraSelector.Builder().requireLensFacing(idx).build()
     }
 
     data class CameraCapability(val camSelector: CameraSelector, var qualities:List<Quality>)
@@ -421,8 +394,6 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
     override fun onDestroy() {
         detector?.close()
         detector = null
-        classifier?.close()
-        classifier = null
         fpsTimer?.cancel()
         fpsTimer = null
         frameProcessedInOneSecondInterval = 0
@@ -465,12 +436,7 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
     }
 
     companion object {
+        const val MIN_CONFIDENCE = .4f
         var DEFAULT_QUALITY_IDX = 1
-        const val VIDEO_EXTENSION = ".mp4"
-
-        fun createFile(context: Context) =
-            File(
-                context.filesDir.path, "${System.currentTimeMillis()}" + VIDEO_EXTENSION
-            )
     }
 }

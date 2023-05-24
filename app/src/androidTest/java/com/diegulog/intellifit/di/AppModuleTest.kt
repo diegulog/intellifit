@@ -1,11 +1,9 @@
 package com.diegulog.intellifit.di
 
 import androidx.room.Room
-import com.diegulog.intellifit.data.repository.local.database.DataBaseRepositoryImpl
+import com.diegulog.intellifit.data.repository.local.database.LocalDataSourceImpl
 import com.diegulog.intellifit.data.repository.local.database.AppDatabase
-import com.diegulog.intellifit.data.repository.local.database.capture.CapturesDao
-import com.diegulog.intellifit.domain.repository.DataBaseRepository
-import com.diegulog.intellifit.utils.SoundPlayer
+import com.diegulog.intellifit.domain.repository.local.LocalDataSource
 import org.koin.dsl.module
 
 
@@ -15,5 +13,5 @@ val appModuleTest = module {
         AppDatabase::class.java)
         .build()
     }
-    single<DataBaseRepository> { DataBaseRepositoryImpl(get()) }
+    single<LocalDataSource> { LocalDataSourceImpl(get()) }
 }
