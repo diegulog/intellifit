@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.diegulog.intellifit.data.repository.local.database.entity.*
 
-@Database(entities = [CaptureEntity::class,  SampleEntity::class, ExerciseEntity::class, TrainingEntity::class], version = 2)
+@Database(entities = [CaptureEntity::class,  SampleEntity::class, ExerciseEntity::class, TrainingEntity::class], version = 3 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun captureDao(): CapturesDao

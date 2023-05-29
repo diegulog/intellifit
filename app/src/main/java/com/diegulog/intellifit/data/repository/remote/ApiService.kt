@@ -46,7 +46,7 @@ interface ApiService {
     suspend fun deleteCapture(@Path("id") id: String): Response<Unit>
 
     @GET("/api/v1/captures")
-    suspend fun getCaptures(): Response<List<Capture>>
+    suspend fun getCaptures(@Query("exerciseId") exerciseId: String): Response<List<Capture>>
 }
 
 fun createApiService(): ApiService {

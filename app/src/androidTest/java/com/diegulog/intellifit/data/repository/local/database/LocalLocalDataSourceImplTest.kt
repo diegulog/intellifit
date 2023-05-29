@@ -37,7 +37,7 @@ class LocalLocalDataSourceImplTest : KoinTest {
         (0 until 10).forEach { _ ->
             localDataSource.saveCapture(sampleCapture())
         }
-        val saveCaptures= localDataSource.getCaptures()
+        val saveCaptures= localDataSource.getCaptures(trainingsMock[0].exercises[0].id)
 
         assertEquals(10, saveCaptures.size)
         assertEquals(MoveType.CORRECT, saveCaptures[0].moveType)
@@ -48,10 +48,10 @@ class LocalLocalDataSourceImplTest : KoinTest {
     @Test
     fun deleteCapture() = runTest {
         localDataSource.saveCapture(sampleCapture())
-        var saveCapture = localDataSource.getCaptures()
+        var saveCapture = localDataSource.getCaptures(trainingsMock[0].exercises[0].id)
         assertEquals(1, saveCapture.size)
         localDataSource.deleteCapture(saveCapture[0].id)
-        saveCapture = localDataSource.getCaptures()
+        saveCapture = localDataSource.getCaptures(trainingsMock[0].exercises[0].id)
         assertEquals(0, saveCapture.size)
     }
 
@@ -62,7 +62,7 @@ class LocalLocalDataSourceImplTest : KoinTest {
             localDataSource.saveCapture(sampleCapture())
         }
 
-        val saveCapture = localDataSource.getCaptures()
+        val saveCapture = localDataSource.getCaptures(trainingsMock[0].exercises[0].id)
         assertEquals(size, saveCapture.size)
     }
 
@@ -71,7 +71,7 @@ class LocalLocalDataSourceImplTest : KoinTest {
 
         //12 samples por captura
         val samples = (0..11).map {
-            Sample(keyPoints = keyPoints, score = 0f, timestamp = it * 100L)
+            Sample(keyPoints = keyPoints, score = 0f, width = 0, height = 0, timestamp = it * 100L)
         }
 
         return Capture(
@@ -79,7 +79,8 @@ class LocalLocalDataSourceImplTest : KoinTest {
             videoPath = "/sdcard/",
             moveType = MoveType.CORRECT,
             timestamp = System.currentTimeMillis(),
-            exerciseId = trainingsMock[0].exercises[0].id
+            exerciseId = trainingsMock[0].exercises[0].id,
+            modelId = "12345"
         )
 
     }

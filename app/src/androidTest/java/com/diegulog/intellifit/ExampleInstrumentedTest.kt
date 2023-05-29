@@ -7,6 +7,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import java.util.UUID
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -21,4 +22,6 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.diegulog.intellifit", appContext.packageName)
     }
+
+
 }

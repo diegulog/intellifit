@@ -17,7 +17,7 @@ data class Exercise(
     val urlVideo: String,
 
     @SerializedName("duration")
-    val duration: Float,
+    val duration: Int,
 
     @SerializedName("idModel")
     val idModel: String,

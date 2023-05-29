@@ -34,5 +34,7 @@
     <string name="retry">Retry</string>
     <string name="start">Start</string>
     <string name="reps">Reps</string>
+    <string name="training">Training</string>
+    <string name="preview">Preview</string>
 
 </resources>

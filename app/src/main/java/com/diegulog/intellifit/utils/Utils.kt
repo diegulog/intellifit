@@ -1,23 +1,27 @@
 package com.diegulog.intellifit.utils
 
 import android.content.Context
+import android.os.Build
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.diegulog.intellifit.BuildConfig
 import com.diegulog.intellifit.domain.entity.BodyPart
 import com.diegulog.intellifit.domain.entity.Capture
 import java.io.File
+import java.nio.file.Files
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.io.path.Path
 import kotlin.math.min
 import kotlin.math.roundToInt
 
 
 const val isDemo = BuildConfig.FLAVOR == "demo"
 
-fun ImageView.load(path:String){
+fun ImageView.load(path: String) {
     Glide.with(this.context).load(path).into(this)
 }
+
 fun <T> List<T>.reduceList(targetSize: Int): List<T> {
     if (targetSize < 2) {
         throw IllegalArgumentException("El tamaño objetivo debe estar entre 2 y el tamaño de la lista original")
@@ -33,6 +37,12 @@ fun <T> List<T>.reduceList(targetSize: Int): List<T> {
         this[position]
     }
 
+}
+fun buildModelIsEmulator(): Boolean {
+    return  Build.MODEL.startsWith("sdk") ||
+            "google_sdk" == Build.MODEL ||
+            Build.MODEL.contains("Emulator") ||
+            Build.MODEL.contains("Android SDK")
 }
 
 fun Capture.parseCsv(context: Context) {
@@ -53,12 +63,15 @@ fun Capture.parseCsv(context: Context) {
     }
     val nameFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS", Locale.ROOT)
     val file = File(
-         context.filesDir.path + File.separator + this.exerciseId,
-         "${this.moveType.name}-${this.id}-${
+        context.filesDir.path + File.separator + this.modelId,
+        "${this.moveType.name}-${
             nameFormat.format(
                 Date()
             )
         }.csv"
     )
+    file.parentFile?.let {
+        Files.createDirectories(it.toPath())
+    }
     file.writeText(builder.toString())
 }

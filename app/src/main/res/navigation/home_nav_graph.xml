@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/CaptureFragment"
-        android:name="com.diegulog.intellifit.ui.capture.CaptureFragment"
+        android:name="com.diegulog.intellifit.ui.home.capture.CaptureFragment"
         android:label="@string/camera_fragment_label"
         tools:layout="@layout/fragment_capture">
 
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/VideoPreviewFragment"
-        android:name="com.diegulog.intellifit.ui.review.VideoPreviewFragment"
+        android:name="com.diegulog.intellifit.ui.home.preview.VideoPreviewFragment"
         android:label="Select Capture"
         tools:layout="@layout/fragment_video_preview">
         <argument
@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/ExerciseFragment"
-        android:name="com.diegulog.intellifit.ui.exercise.ExerciseFragment"
+        android:name="com.diegulog.intellifit.ui.home.exercise.ExerciseFragment"
         android:label="Exercise"
         tools:layout="@layout/fragment_exercise">
         <argument
@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_ExerciseFragment_to_CaptureFragment"
             app:destination="@id/CaptureFragment" />
+        <action
+            android:id="@+id/action_ExerciseFragment_to_VideoPreviewFragment"
+            app:destination="@id/VideoPreviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"

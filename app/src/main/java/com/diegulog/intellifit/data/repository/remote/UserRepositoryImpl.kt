@@ -7,6 +7,7 @@ import com.diegulog.intellifit.domain.repository.remote.NetworkDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class UserRepositoryImpl(
     private val networkDataSource: NetworkDataSource
@@ -24,6 +25,7 @@ class UserRepositoryImpl(
         try {
             block.invoke(this)
         } catch (e: Exception) {
+            Timber.e(e)
             emit(ResultOf.Failure(e))
         }
     }

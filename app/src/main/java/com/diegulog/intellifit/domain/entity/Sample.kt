@@ -13,9 +13,16 @@ data class Sample(
     @SerializedName("score")
     val score: Float,
 
+    @SerializedName("width")
+    val width: Int,
+
+    @SerializedName("height")
+    val height: Int,
+
     @SerializedName("timestamp")
     var timestamp: Long = System.currentTimeMillis(),
 
     @SerializedName("captureId")
-    var captureId: String = ""
-):BaseEntity()
+    var captureId: String = "",
+
+    ) : BaseEntity()

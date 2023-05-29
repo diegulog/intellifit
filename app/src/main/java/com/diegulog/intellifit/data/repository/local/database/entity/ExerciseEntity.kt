@@ -14,7 +14,8 @@ import com.diegulog.intellifit.domain.entity.Exercise
             entity = TrainingEntity::class,
             parentColumns = ["id"],
             childColumns = ["trainingId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ]
 )
@@ -24,7 +25,7 @@ data class ExerciseEntity(
     val name: String = "",
     val urlImage: String = "",
     val urlVideo: String = "",
-    val duration: Float = 0f,
+    val duration: Int = 1,
     val idModel: String = "",
     var trainingId: String,
     val isPublic: Boolean = false,

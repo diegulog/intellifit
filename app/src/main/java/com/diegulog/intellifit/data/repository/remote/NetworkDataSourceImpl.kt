@@ -10,6 +10,7 @@ import com.diegulog.intellifit.domain.repository.remote.NetworkDataSource
 import com.diegulog.intellifit.domain.repository.remote.NetworkException
 import org.json.JSONObject
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 
 class NetworkDataSourceImpl(private val apiService: ApiService) : NetworkDataSource {
@@ -27,6 +28,7 @@ class NetworkDataSourceImpl(private val apiService: ApiService) : NetworkDataSou
                 throw ApiException("Error al comunicar con el servidor. Por favor intententalo mas tarde. Code: ${response.code()}")
             }
         } catch (ioe: IOException) {
+            Timber.e(ioe)
             throw NetworkException()
         }
     }
@@ -67,8 +69,8 @@ class NetworkDataSourceImpl(private val apiService: ApiService) : NetworkDataSou
         networkCall { apiService.deleteCapture(id) }
     }
 
-    override suspend fun getCaptures(): List<Capture> {
-        return networkCall { apiService.getCaptures() } ?: emptyList()
+    override suspend fun getCaptures(exerciseId: String): List<Capture> {
+        return networkCall { apiService.getCaptures(exerciseId) } ?: emptyList()
     }
 
     private suspend fun <T> networkCall(block: suspend () -> Response<T>): T? {
@@ -85,6 +87,7 @@ class NetworkDataSourceImpl(private val apiService: ApiService) : NetworkDataSou
                 throw ApiException("Error al comunicar con el servidor. Por favor intententalo mas tarde. Code: ${response.code()}")
             }
         } catch (ioe: IOException) {
+            Timber.e(ioe)
             throw NetworkException()
         }
     }

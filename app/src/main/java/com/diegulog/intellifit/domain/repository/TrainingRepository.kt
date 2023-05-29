@@ -16,7 +16,7 @@ interface TrainingRepository {
     fun getExercises(trainingId: String): Flow<ResultOf<List<Exercise>>>
     suspend fun saveCapture(capture: Capture)
     fun sendCapture(capture: Capture): Flow<ResultOf<Capture>>
-    fun deleteCapture(id: String): Flow<ResultOf<String>>
-    fun getCaptures(): Flow<ResultOf<List<Capture>>>
+    suspend fun deleteCapture(id: String)
+    fun getCaptures(exerciseId: String): Flow<ResultOf<List<Capture>>>
 
 }

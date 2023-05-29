@@ -5,16 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.diegulog.intellifit.databinding.FragmentDatailsBinding
 import com.diegulog.intellifit.domain.entity.Exercise
-import com.diegulog.intellifit.domain.entity.Training
 import com.diegulog.intellifit.ui.base.BaseAdapter
 import com.diegulog.intellifit.ui.base.BaseFragment
-import com.diegulog.intellifit.ui.exercise.ExerciseFragmentDirections
-import com.diegulog.intellifit.ui.home.HomeFragment
-import com.diegulog.intellifit.ui.home.training.TrainingFragmentDirections
 import com.diegulog.intellifit.utils.load
 
 class DetailsFragment : BaseFragment<FragmentDatailsBinding>() {

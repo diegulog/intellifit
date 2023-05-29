@@ -1,4 +1,4 @@
-package com.diegulog.intellifit.ui.capture
+package com.diegulog.intellifit.ui.home.capture
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.diegulog.intellifit.R
 import com.diegulog.intellifit.movenet.camerax.CameraXFragment
 import com.diegulog.intellifit.databinding.FragmentCaptureBinding
-import com.diegulog.intellifit.domain.entity.Sample
-import com.diegulog.intellifit.movenet.camerax.CameraSourceListener
 import com.diegulog.intellifit.ui.base.BaseFragment
+import com.diegulog.intellifit.ui.home.HomeFragment
+import com.diegulog.intellifit.ui.home.exercise.ExerciseFragmentDirections
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -23,8 +24,8 @@ import java.io.File
 
 class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
     CaptureViewModel.VideoCaptureListener {
-    private val args: CaptureFragmentArgs by navArgs()
 
+    private val args: CaptureFragmentArgs by navArgs()
     private val captureViewModel: CaptureViewModel by viewModel {
         parametersOf(args.exercise)
     }
@@ -32,6 +33,8 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
     private lateinit var cameraFragment: CameraXFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getHostFragment<HomeFragment>()?.setTitle(getString(R.string.training) + " - " +args.exercise.name)
+
         cameraFragment = binding.cameraFragment.getFragment()
         cameraFragment.cameraSourceListener = captureViewModel
         captureViewModel.isCapture.observe(viewLifecycleOwner) {
@@ -65,10 +68,9 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
                 lifecycleScope.launch {
                     captureViewModel.stopCapture()
                     binding.btnPlay.isEnabled = true
-                    findNavController().navigate(R.id.action_CaptureFragment_to_VideoPreviewFragment)
+                    val direction = CaptureFragmentDirections.actionCaptureFragmentToVideoPreviewFragment(args.exercise)
+                    Navigation.findNavController(requireView()).navigate(direction)
                 }
-
-
             }
         }
     }
@@ -89,7 +91,7 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
             cameraFragment.startVideoRecording(
                 File(path)
             )
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
@@ -97,7 +99,7 @@ class CaptureFragment : BaseFragment<FragmentCaptureBinding>(),
     override fun onStopCapture() {
         try {
             cameraFragment.stopVideoRecording()
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }

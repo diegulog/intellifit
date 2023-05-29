@@ -15,7 +15,6 @@ import com.diegulog.intellifit.databinding.FragmentTrainingBinding
 import com.diegulog.intellifit.domain.entity.Training
 import com.diegulog.intellifit.ui.base.BaseAdapter
 import com.diegulog.intellifit.ui.base.BaseFragment
-import com.diegulog.intellifit.ui.exercise.ExerciseFragmentArgs
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TrainingFragment : BaseFragment<FragmentTrainingBinding>() {
@@ -28,7 +27,6 @@ class TrainingFragment : BaseFragment<FragmentTrainingBinding>() {
     ): FragmentTrainingBinding {
         return FragmentTrainingBinding.inflate(inflater, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

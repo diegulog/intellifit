@@ -45,10 +45,12 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.diegulog.intellifit.R
+import com.diegulog.intellifit.utils.buildModelIsEmulator
 
 class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
 
     private var modelType = ModelType.Lightning
+
     /** Default device is CPU */
     private var device = Device.CPU
     private val lock = Any()
@@ -61,12 +63,19 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
     private val cameraCapabilities = mutableListOf<CameraCapability>()
     private lateinit var videoCapture: VideoCapture<Recorder>
     private var currentRecording: Recording? = null
-    private var cameraIndex = CameraSelector.LENS_FACING_FRONT
-    private var qualityIndex = DEFAULT_QUALITY_IDX
+    private val cameraIndex: Int = CameraSelector.LENS_FACING_FRONT
+
+    private val qualityIndex: Int by lazy {
+        if (buildModelIsEmulator()) {
+            0
+        } else {
+            DEFAULT_QUALITY_IDX
+        }
+    }
     private var audioEnabled = false
 
     private val mainThreadExecutor by lazy { ContextCompat.getMainExecutor(requireContext()) }
-    private var enumerationDeferred:Deferred<Unit>? = null
+    private var enumerationDeferred: Deferred<Unit>? = null
     var recordVideoListener: RecordVideoListener? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
@@ -94,10 +103,10 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         super.onViewCreated(view, savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
         yuvConverter = YuvToRgbConverter(requireContext())
-        setDetector(MoveNet.create( requireActivity(), device, modelType))
-        if(isCameraPermissionGranted()){
+        setDetector(MoveNet.create(requireActivity(), device, modelType))
+        if (isCameraPermissionGranted()) {
             initCameraFragment()
-        }else{
+        } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
@@ -122,8 +131,10 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
 
         binding.surfaceView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             val orientation = this@CameraXFragment.resources.configuration.orientation
-            dimensionRatio = quality.getAspectRatioString(quality,
-                (orientation == Configuration.ORIENTATION_PORTRAIT))
+            dimensionRatio = quality.getAspectRatioString(
+                quality,
+                (orientation == Configuration.ORIENTATION_PORTRAIT)
+            )
         }
 
         val imageAnalyzer = ImageAnalysis.Builder()
@@ -155,9 +166,9 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
                             rotateMatrix, false
                         )
                         // Create rotated version for portrait display
-                        try{
+                        try {
                             processImage(rotatedBitmap)
-                        }catch (_:java.lang.Exception){
+                        } catch (_: java.lang.Exception) {
 
                         }
                     }
@@ -185,13 +196,20 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
             recordVideoListener?.onError("Use case binding failed", exc)
         }
     }
+
     private fun processImage(bitmap: Bitmap) {
+
         val samples = mutableListOf<Sample>()
         synchronized(lock) {
-            detector?.estimatePoses(bitmap)?.let {
-                samples.addAll(it)
-                // if the model only returns one item, allow running the Pose classifier.
+            try{
+                detector?.estimatePoses(bitmap)?.let {
+                    samples.addAll(it)
+                    // if the model only returns one item, allow running the Pose classifier.
+                }
+            }catch (t:Throwable){
+                Timber.e(t)
             }
+
         }
         frameProcessedInOneSecondInterval++
         if (frameProcessedInOneSecondInterval == 1) {
@@ -201,19 +219,20 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
 
         // if the model returns only one item, show that item's score.
         if (samples.isNotEmpty()) {
-            if(samples[0].score > MIN_CONFIDENCE){
+            if (samples[0].score > MIN_CONFIDENCE) {
                 cameraSourceListener?.onDetected(samples[0])
             }
             //listener?.onDetectedInfo(persons[0].score, classificationResult)
         }
         visualize(samples, bitmap)
+
     }
 
     private fun visualize(samples: List<Sample>, bitmap: Bitmap) {
 
         val outputBitmap = VisualizationUtils.drawBodyKeypoints(
-            bitmap,
-            samples.filter { it.score > MIN_CONFIDENCE }
+            samples.filter { it.score > MIN_CONFIDENCE },
+            bitmap
         )
 
         val holder = binding.surfaceView.holder
@@ -281,8 +300,9 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
 
         Timber.i("Recording started")
     }
-    fun stopVideoRecording(){
-        if (currentRecording == null ) {
+
+    fun stopVideoRecording() {
+        if (currentRecording == null) {
             return
         }
         val recording = currentRecording
@@ -292,36 +312,28 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         }
     }
 
-    fun changeCamera(){
-        cameraIndex = (cameraIndex + 1) % cameraCapabilities.size
-        viewLifecycleOwner.lifecycleScope.launch {
-            bindCaptureUsecase()
-        }
-    }
-    fun enableAudio(enable:Boolean){
+    fun enableAudio(enable: Boolean) {
         this.audioEnabled = enable
     }
 
-    fun getQualities():List<String>{
+    fun getQualities(): List<String> {
         val selectorStrings = cameraCapabilities[cameraIndex].qualities.map {
             it.getNameString()
         }
         return selectorStrings
     }
 
-    fun changeQuality(qualityIndex:Int){
-        this.qualityIndex =  qualityIndex
-    }
     /**
      * Retrieve the asked camera's type(lens facing type). In this sample, only 2 types:
      *   idx is even number:  CameraSelector.LENS_FACING_BACK
      *          odd number:   CameraSelector.LENS_FACING_FRONT
      */
-    private fun getCameraSelector(idx: Int) : CameraSelector {
+    private fun getCameraSelector(idx: Int): CameraSelector {
         return CameraSelector.Builder().requireLensFacing(idx).build()
     }
 
-    data class CameraCapability(val camSelector: CameraSelector, var qualities:List<Quality>)
+    data class CameraCapability(val camSelector: CameraSelector, var qualities: List<Quality>)
+
     /**
      * Query and cache this platform's camera capabilities, run only once.
      */
@@ -351,7 +363,7 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
                             cameraCapabilities.forEach { it.qualities = it.qualities.reversed() }
                         }
                     } catch (exc: java.lang.Exception) {
-                        Timber.e( "Camera Face $camSelector is not supported")
+                        Timber.e("Camera Face $camSelector is not supported")
                     }
                 }
             }
@@ -391,15 +403,17 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         )
     }
 
-    override fun onDestroy() {
-        detector?.close()
-        detector = null
+    override fun onDestroyView() {
+        //TODO revisart error al llamar a close()
+      /*  detector?.close()
+        detector = null*/
         fpsTimer?.cancel()
         fpsTimer = null
         frameProcessedInOneSecondInterval = 0
         framesPerSecond = 0
-        super.onDestroy()
+        super.onDestroyView()
     }
+
     private fun requestPermission() {
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
@@ -432,7 +446,7 @@ class CameraXFragment : BaseFragment<FragmentCameraBinding>() {
         inflater: LayoutInflater,
         container: ViewGroup?
     ): FragmentCameraBinding {
-        return FragmentCameraBinding.inflate(inflater, container,false)
+        return FragmentCameraBinding.inflate(inflater, container, false)
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.diegulog.intellifit.ui.exercise
+package com.diegulog.intellifit.ui.home.exercise
 
 import android.content.Context
 import android.os.SystemClock
@@ -8,6 +8,7 @@ import com.diegulog.intellifit.domain.entity.Sample
 import com.diegulog.intellifit.movenet.camerax.CameraSourceListener
 import com.diegulog.intellifit.movenet.ml.ExerciseClassifier
 import com.diegulog.intellifit.ui.base.BaseViewModel
+import com.diegulog.intellifit.ui.home.capture.CaptureViewModel.Companion.SAMPLES_FOR_SECOND
 import com.diegulog.intellifit.utils.SoundPlayer
 import com.diegulog.intellifit.utils.reduceList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,7 @@ class ExerciseViewModel(
     private val soundPlayer: SoundPlayer,
     private val exercise: Exercise
 ) : BaseViewModel() , CameraSourceListener  {
-    private val sampleTemp = EvictingQueue(2000) // 2 segundos
+    private val sampleTemp = EvictingQueue((exercise.duration * 1000L )+ 100)
     private val exerciseClassifier: ExerciseClassifier = ExerciseClassifier(exercise.idModel)
     private var exerciseStartTime: Long = -1
     private var lastSampleTime: Long = -1
@@ -41,7 +42,7 @@ class ExerciseViewModel(
         if(inferenceTimeMs > TIME_BETWEEN_INFERENCE){
             Timber.d("inference: %s  ", inferenceTimeMs)
             lastSampleTime = System.currentTimeMillis()
-            _outputInference.value = exerciseClassifier.classify(sampleTemp.map { it.copy() }.reduceList(12))
+            _outputInference.value = exerciseClassifier.classify(sampleTemp.map { it.copy() }.reduceList(SAMPLES_FOR_SECOND * exercise.duration))
             detectCorrectExercise(_outputInference.value[0])
         }
 
@@ -67,9 +68,9 @@ class ExerciseViewModel(
     }
 
     companion object{
-        const val TIME_BETWEEN_INFERENCE = 200  // 500 mili
-        private val RISE_THRESHOLD = 0.99f
-        private const val MIN_EXERCISE_TIME_MS: Long = 800  // 800 mili
+        const val TIME_BETWEEN_INFERENCE = 300  // 300 mili
+        private val RISE_THRESHOLD = 0.98f
+        private const val MIN_EXERCISE_TIME_MS: Long = 500  // 800 mili
 
 
     }

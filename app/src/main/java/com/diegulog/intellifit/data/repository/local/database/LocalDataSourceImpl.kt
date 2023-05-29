@@ -28,8 +28,8 @@ class LocalDataSourceImpl(private val appDatabase: AppDatabase) :
         }
     }
 
-    override suspend fun getCaptures(): List<Capture> {
-        val captures = appDatabase.captureDao().getAll().map {
+    override suspend fun getCaptures(exerciseId: String): List<Capture> {
+        val captures = appDatabase.captureDao().getAllFromExercise(exerciseId).map {
             it.samples = appDatabase.sampleDao().getAllFromCapture(it.id)
             it.toDomain()
         }
@@ -38,6 +38,7 @@ class LocalDataSourceImpl(private val appDatabase: AppDatabase) :
 
     override suspend fun saveTraining(training: Training) {
         val trainingEntity = TrainingEntity.fromDomain(training)
+        appDatabase.trainingDao().delete(training.id)
         appDatabase.trainingDao().save(trainingEntity)
         for (exercise in trainingEntity.exercises) {
             exercise.trainingId = training.id

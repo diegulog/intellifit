@@ -1,9 +1,6 @@
 package com.diegulog.intellifit.data.repository.remote
 
-import com.diegulog.intellifit.domain.entity.Exercise
-import com.diegulog.intellifit.domain.entity.LoginResponse
-import com.diegulog.intellifit.domain.entity.Training
-import com.diegulog.intellifit.domain.entity.User
+import com.diegulog.intellifit.domain.entity.*
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -42,6 +39,7 @@ class ApiServiceMockInterceptor : Interceptor {
 
         return response.build()
     }
+
 
     private fun processLogin(requestBody: RequestBody): String {
         val formBody = requestBody as FormBody
@@ -92,7 +90,7 @@ class ApiServiceMockInterceptor : Interceptor {
                 name = "Air Squat",
                 urlImage = "https://persistenceathletics.com/wp-content/uploads/2020/05/bigstock-Girl-Doing-Squat-Exercise-Wom-362669806-scaled.jpg",
                 urlVideo = "url_video_air_squat",
-                duration = 2f,
+                duration = 2,
                 idModel = "8453460833266057795",
                 captures = emptyList(),
                 isPublic = true,
@@ -105,7 +103,7 @@ class ApiServiceMockInterceptor : Interceptor {
                 name = "Squat Jumps",
                 urlImage = "https://img.freepik.com/premium-vector/jump-squat-exercise-woman-workout-fitness-aerobic-exercises_476141-711.jpg?w=2000",
                 urlVideo = "url_video_squat_jumps",
-                duration = 2f,
+                duration = 2,
                 idModel = "3184025200255848001",
                 captures = emptyList(),
                 isPublic = true,
@@ -118,7 +116,7 @@ class ApiServiceMockInterceptor : Interceptor {
                 name = "Plank leg raises - left side",
                 urlImage = "https://media1.popsugar-assets.com/files/thumbor/gkEOI0RBhSokrXnl3pCdcThd66Y/fit-in/728xorig/filters:format_auto-!!-:strip_icc-!!-/2013/12/17/713/n/1922729/e667013e1a76673e_side-plank-flip/i/Side-Plank-Leg-Lift-Left-Side.jpg",
                 urlVideo = "url_video_plank_leg_raises_left",
-                duration = 2f,
+                duration = 2,
                 idModel = "6019807089751968608",
                 captures = emptyList(),
                 isPublic = true,
@@ -127,11 +125,11 @@ class ApiServiceMockInterceptor : Interceptor {
                 repeat = 30
             ),
             Exercise(
-                id = "202ea328-2775-4096-b86f-44b2bes2f18d",
+                id = "102ea328-2775-4196-b8ff-44b2bes2f18d",
                 name = "Plank leg raises - right side",
                 urlImage = "https://media1.popsugar-assets.com/files/thumbor/lcDIAcF82YoqR6MdBdAxqrCa13Y/fit-in/728xorig/filters:format_auto-!!-:strip_icc-!!-/2013/12/17/713/n/1922729/5aa7a350c9a78b68_side-plank-leg-lift/i/Side-Plank-Leg-Lift-Right-Side.jpg",
                 urlVideo = "url_video_plank_leg_raises_right",
-                duration = 2f,
+                duration = 2,
                 idModel = "8357074708213445358",
                 captures = emptyList(),
                 isPublic = true,
@@ -140,13 +138,13 @@ class ApiServiceMockInterceptor : Interceptor {
                 repeat = 30
             )
         )
-
         private val exercises1Mock = listOf(
             Exercise(
+                id = "3097a0ae-225f-4e1c-a507-7d7839b9c40a",
                 name = "Jumping Jacks",
                 urlImage = "https://images.hola.com/imagenes/estar-bien/20200722172434/ejercicio-adelgazar-jumping-jacks-quemar-calorias/0-849-35/jumping-jack-2z-z.jpg",
                 urlVideo = "url_video_jumping_jacks",
-                duration = 1f,
+                duration = 1,
                 idModel = "537067024020715589",
                 captures = emptyList(),
                 isPublic = true,
@@ -155,10 +153,11 @@ class ApiServiceMockInterceptor : Interceptor {
                 repeat = 30
             ),
             Exercise(
+                id = "5b42f728-49cf-400d-be72-9751cf672bab",
                 name = "Burpees",
                 urlImage = "https://media.istockphoto.com/id/1286796612/es/vector/ejercicio-burpees-ejercicio-de-la-mujer-aer%C3%B3bico-y-ejercicios-ilustraci%C3%B3n-vectorial.jpg?s=612x612&w=0&k=20&c=lOcc6ptm_no5rDSMPSQObYui_CBooL5hhqECoP4ALjo=",
                 urlVideo = "url_video_burpees",
-                duration = 1.5f,
+                duration = 3,
                 idModel = "3555357682168676141",
                 captures = emptyList(),
                 isPublic = true,
@@ -167,10 +166,11 @@ class ApiServiceMockInterceptor : Interceptor {
                 repeat = 30
             ),
             Exercise(
+                id = "d4e74655-a7fd-48e2-8cab-ad268bdd7306",
                 name = "High Knees",
                 urlImage = "https://media.istockphoto.com/id/1314130951/vector/high-knees-exercise-woman-workout-fitness-aerobic-and-exercises-vector-illustration.jpg?s=170667a&w=0&k=20&c=EFs03hRln5OgAFDxyM1sOMGq2inzP7CwBCub29SDTI0=",
                 urlVideo = "url_video_high_knees",
-                duration = 1f,
+                duration = 1,
                 idModel = "716015015213091302",
                 captures = emptyList(),
                 isPublic = true,
@@ -179,17 +179,14 @@ class ApiServiceMockInterceptor : Interceptor {
                 repeat = 30
             )
         )
-
-
-
-
         private val exercises2Mock =
             listOf(
                 Exercise(
+                    id = "04a07547-78a0-4a94-9f41-5b4c72e0634a",
                     name = "Push Ups",
                     urlImage = "https://media.istockphoto.com/id/1281672735/es/vector/mujer-haciendo-ejercicio-con-knee-push-up-en-2-pasos.jpg?s=170667a&w=0&k=20&c=7mMmc2ALL7qX12PE2sUs20gVHkR68lOOE391ibGq6KE=",
                     urlVideo = "url_video_push_ups",
-                    duration = 1f,
+                    duration = 2,
                     idModel = "323485527951887622",
                     captures = emptyList(),
                     isPublic = true,
@@ -198,10 +195,11 @@ class ApiServiceMockInterceptor : Interceptor {
                     repeat = 30
                 ),
                 Exercise(
+                    id = "58efa385-4de5-482f-8c6a-b32fe133b0d0",
                     name = "Squats",
                     urlImage = "https://media.istockphoto.com/id/985022798/vector/squat-sport-exersice-silhouettes-of-woman-doing-exercise-workout-training.jpg?s=1024x1024&w=is&k=20&c=eI0QoUWmyBJKShfL5orGbbXNwwbmNYaPnTKdsZDhkvQ=",
                     urlVideo = "url_video_squats",
-                    duration = 1.5f,
+                    duration = 2,
                     idModel = "5043439550877025664",
                     captures = emptyList(),
                     isPublic = true,
@@ -210,10 +208,11 @@ class ApiServiceMockInterceptor : Interceptor {
                     repeat = 30
                 ),
                 Exercise(
+                    id = "a1f326eb-a54e-4f23-b089-c6a15d4751bc",
                     name = "Lunges",
                     urlImage = "https://media.istockphoto.com/id/1285221444/es/vector/caminar-ejercicio-lunge-entrenamiento-de-los-hombres-fitness-aer%C3%B3bico-y-ejercicios.jpg?s=1024x1024&w=is&k=20&c=GIe5qjM_EFary5fQJkI2GgsOlWC_N5DVfcbXfX_bhXA=",
                     urlVideo = "5927109199068676682",
-                    duration = 1f,
+                    duration = 2,
                     idModel = "modelo_lunges",
                     captures = emptyList(),
                     isPublic = true,
@@ -222,10 +221,11 @@ class ApiServiceMockInterceptor : Interceptor {
                     repeat = 30
                 ),
                 Exercise(
+                    id = "797a6240-7ada-4129-9c5a-33989aedbc3b",
                     name = "Plank Jacks",
                     urlImage = "https://media.istockphoto.com/id/1265941147/vector/plank-jacks-exercise-men-workout-fitness-aerobic-and-exercises-vector-illustration.jpg?s=170667a&w=0&k=20&c=i8tNTxyo6rVTUmj80NppuagkZIULCePLhsujBbdGTVs=",
                     urlVideo = "7961668557162104314",
-                    duration = 1f,
+                    duration = 1,
                     idModel = "modelo_plank_jacks",
                     captures = emptyList(),
                     isPublic = true,
@@ -235,7 +235,6 @@ class ApiServiceMockInterceptor : Interceptor {
                 )
 
             )
-
         val trainingsMock = listOf(
             Training(
                 id = "01afecdb-b0de-46b3-ab2b-f796a493a9d2",

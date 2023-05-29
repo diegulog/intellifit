@@ -47,7 +47,7 @@ class ExerciseClassifier(idModel: String) {
             }
             // Postprocess the model output to human readable class names
             val outputTensor = FloatArray(output[1])
-            interpreter!!.run(arrayOf(inputVector), arrayOf(outputTensor))
+            interpreter?.run(arrayOf(inputVector), arrayOf(outputTensor))
             return outputTensor
         }
         return floatArrayOf(0f,0f)

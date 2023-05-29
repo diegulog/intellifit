@@ -15,5 +15,5 @@ interface LocalDataSource {
 
     suspend fun saveCapture(capture: Capture)
     suspend fun deleteCapture(id: String)
-    suspend fun getCaptures(): List<Capture>
+    suspend fun getCaptures(exerciseId: String): List<Capture>
 }

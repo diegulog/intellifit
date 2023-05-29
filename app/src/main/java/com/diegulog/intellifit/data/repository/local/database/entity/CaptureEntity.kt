@@ -7,16 +7,9 @@ import androidx.room.PrimaryKey
 import com.diegulog.intellifit.data.repository.DomainTranslatable
 import com.diegulog.intellifit.domain.entity.Capture
 import com.diegulog.intellifit.domain.entity.MoveType
+
 @Entity(
-    tableName = "capture",
-    foreignKeys = [
-        ForeignKey(
-            entity = ExerciseEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["exerciseId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+    tableName = "capture"
 )
 data class CaptureEntity(
     @PrimaryKey
@@ -25,7 +18,8 @@ data class CaptureEntity(
     val moveType: MoveType,
     val timestamp: Long = 0,
     var exerciseId: String,
-    ): DomainTranslatable<Capture> {
+    var modelId: String
+): DomainTranslatable<Capture> {
     @Ignore
     var samples: List<SampleEntity> = emptyList()
     override fun toDomain(): Capture {
@@ -35,7 +29,8 @@ data class CaptureEntity(
             videoPath = videoPath,
             moveType = moveType,
             timestamp = timestamp,
-            exerciseId = exerciseId
+            exerciseId = exerciseId,
+            modelId = modelId
         )
     }
 
@@ -46,7 +41,8 @@ data class CaptureEntity(
                 videoPath = capture.videoPath,
                 moveType = capture.moveType,
                 timestamp = capture.timestamp,
-                exerciseId = capture.exerciseId
+                exerciseId = capture.exerciseId,
+                modelId = capture.modelId
             ).apply {
                 samples = capture.samples.map { SampleEntity.fromDomain(it) }
             }

@@ -20,5 +20,10 @@ data class Capture(
     val timestamp: Long = System.currentTimeMillis(),
 
     @SerializedName("exerciseId")
-    var exerciseId: String
+    var exerciseId: String,
+
+    @SerializedName("modelId")
+    var modelId: String
+
+
 ) : BaseEntity()

@@ -2,6 +2,7 @@ package com.diegulog.intellifit.data.repository.local.database.entity
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
@@ -12,7 +13,8 @@ interface CapturesDao{
     suspend fun getAll(): List<CaptureEntity>
     @Query("DELETE FROM capture WHERE id = :id")
     suspend fun delete(id: String)
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(entity: CaptureEntity)
 
     @Query("SELECT * FROM capture WHERE exerciseId = :exerciseId")

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.diegulog.intellifit.data.repository.DomainTranslatable
 import com.diegulog.intellifit.domain.entity.KeyPoint
 import com.diegulog.intellifit.domain.entity.Sample
+import com.google.gson.annotations.SerializedName
 
 @Entity(
     tableName = "sample",
@@ -15,8 +16,9 @@ import com.diegulog.intellifit.domain.entity.Sample
             entity = CaptureEntity::class,
             parentColumns = ["id"],
             childColumns = ["captureId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+            )
     ]
 )
 class SampleEntity(
@@ -25,6 +27,8 @@ class SampleEntity(
     val score: Float = 0f,
     val timestamp: Long = System.currentTimeMillis(),
     val keyPoints: List<KeyPoint>,
+    val width: Int,
+    val height: Int,
     var captureId: String,
 ) : DomainTranslatable<Sample> {
     @Ignore
@@ -34,6 +38,8 @@ class SampleEntity(
             score = score,
             timestamp = timestamp,
             keyPoints = keyPoints,
+            width = width,
+            height = height,
             captureId = captureId
         )
     }
@@ -45,6 +51,8 @@ class SampleEntity(
                 score = sample.score,
                 timestamp = sample.timestamp,
                 keyPoints = sample.keyPoints,
+                width = sample.width,
+                height = sample.height,
                 captureId = sample.captureId
             )
         }

@@ -12,12 +12,14 @@ import com.diegulog.intellifit.utils.isDemo
 import com.diegulog.intellifit.utils.parseCsv
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class TrainingRepositoryImpl(
     private val context: Context,
     private val localDataSource: LocalDataSource,
     private val networkDataSource: NetworkDataSource
 ) : TrainingRepository {
+
     override fun saveTraining(training: Training) = callFlow {
         networkDataSource.saveTraining(training)
         localDataSource.saveTraining(training)
@@ -76,23 +78,22 @@ class TrainingRepositoryImpl(
         emit(ResultOf.Success(capture))
     }
 
-    override fun deleteCapture(id: String) = callFlow {
-        networkDataSource.deleteCapture(id)
+    override suspend fun deleteCapture(id: String) {
         localDataSource.deleteCapture(id)
-        emit(ResultOf.Success(id))
     }
 
 
-    override fun getCaptures() = callFlow {
-        val localCaptures = localDataSource.getCaptures()
+    override fun getCaptures(exerciseId: String) = callFlow {
+        val localCaptures = localDataSource.getCaptures(exerciseId)
         emit(ResultOf.Success(localCaptures))
 
-        val networkCaptures = networkDataSource.getCaptures()
+     /*   val networkCaptures = networkDataSource.getCaptures(exerciseId)
         emit(ResultOf.Success(networkCaptures))
 
         networkCaptures.forEach {
             localDataSource.saveCapture(it)
         }
+        */
     }
 
     private fun <T> callFlow(block: suspend FlowCollector<ResultOf<T>>.() -> Unit) = flow {
@@ -100,6 +101,7 @@ class TrainingRepositoryImpl(
         try {
             block.invoke(this)
         } catch (e: Exception) {
+            Timber.e(e)
             emit(ResultOf.Failure(e))
         }
     }

@@ -17,7 +17,11 @@ class ExampleUnitTest {
         for (i in 1..20) {
             System.out.println(UUID.randomUUID().mostSignificantBits.absoluteValue)
         }
-
-
+    }
+    @Test
+    fun generate(){
+        for (i in 0..20) {
+            println(UUID.randomUUID().toString())
+        }
     }
 }
