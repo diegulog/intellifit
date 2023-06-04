@@ -67,23 +67,13 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>(), MenuPr
         binding.video.setVideoURI(videoUri)
         //binding.video.isVisible = true
         binding.video.setOnTouchListener { _, _ ->
-
-            false
+            playVideo()
+            true
         }
 
-        binding.surfaceView.setOnTouchListener { _, _ ->
-            playCapture(corrects[0])
-            binding.video.start()
-            false
-        }
+
         //playCapture(corrects[0])
         playVideo()
-    }
-
-    private fun playCapture(capture: Capture){
-        viewModel.playCapture(binding.surfaceView, capture).observe(viewLifecycleOwner){
-            binding.surfaceView.isClickable = !it.isLoading
-        }
     }
 
 
@@ -168,8 +158,8 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>(), MenuPr
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when(menuItem.itemId){
             R.id.menu_preview -> {
-                binding.video.isVisible = !binding.video.isVisible
-                binding.surfaceView.isVisible = !binding.surfaceView.isVisible
+               /* binding.video.isVisible = !binding.video.isVisible
+                binding.surfaceView.isVisible = !binding.surfaceView.isVisible*/
             }
 
         }
