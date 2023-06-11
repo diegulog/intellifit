@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     fun setTitle(title: String){
-        binding.toolbar.setTitle(title)
+        binding.toolbar.title = title
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean

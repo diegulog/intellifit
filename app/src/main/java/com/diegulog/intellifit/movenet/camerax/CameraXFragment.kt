@@ -2,7 +2,6 @@ package com.diegulog.intellifit.movenet.camerax
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -25,9 +24,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.whenCreated
-import com.blautic.cameraxlib.getAspectRatio
-import com.blautic.cameraxlib.getAspectRatioString
-import com.blautic.cameraxlib.getNameString
 import com.diegulog.intellifit.databinding.FragmentCameraBinding
 import com.diegulog.intellifit.domain.entity.Device
 import com.diegulog.intellifit.domain.entity.Sample

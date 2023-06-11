@@ -1,4 +1,4 @@
-package com.blautic.cameraxlib
+package com.diegulog.intellifit.movenet.camerax
 
 import androidx.camera.core.AspectRatio
 import androidx.camera.video.Quality

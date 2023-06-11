@@ -7,7 +7,7 @@ import com.diegulog.intellifit.data.repository.local.database.AppDatabase
 import com.diegulog.intellifit.data.repository.local.preferences.AppPreferencesImpl
 import com.diegulog.intellifit.data.repository.remote.ApiService
 import com.diegulog.intellifit.data.repository.remote.NetworkDataSourceImpl
-import com.diegulog.intellifit.data.repository.remote.UserRepositoryImpl
+import com.diegulog.intellifit.data.repository.UserRepositoryImpl
 import com.diegulog.intellifit.data.repository.remote.createApiService
 import com.diegulog.intellifit.domain.repository.TrainingRepository
 import com.diegulog.intellifit.domain.repository.UserRepository
