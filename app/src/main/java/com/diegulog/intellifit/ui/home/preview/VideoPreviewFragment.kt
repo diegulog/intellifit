@@ -7,9 +7,9 @@ import android.view.*
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.diegulog.intellifit.R
 import com.diegulog.intellifit.data.isLoading
 import com.diegulog.intellifit.data.onFailure
@@ -19,17 +19,17 @@ import com.diegulog.intellifit.domain.entity.Capture
 import com.diegulog.intellifit.domain.entity.MoveType
 import com.diegulog.intellifit.ui.base.BaseFragment
 import com.diegulog.intellifit.ui.home.HomeFragment
-import com.diegulog.intellifit.ui.home.exercise.ExerciseFragmentArgs
-import com.diegulog.intellifit.ui.home.exercise.ExerciseFragmentDirections
+import com.diegulog.intellifit.ui.home.details.DetailsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
 
 class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>(), MenuProvider {
 
-    private val args: ExerciseFragmentArgs by navArgs()
+    private val detailsViewModel: DetailsViewModel by activityViewModels()
+
     private val viewModel: VideoPreviewViewModel by viewModel{
-        parametersOf(args.exercise)
+        parametersOf(detailsViewModel.getCurrentExercise())
     }
     private var totalVideos: Int = 0
 
@@ -37,7 +37,7 @@ class VideoPreviewFragment : BaseFragment<FragmentVideoPreviewBinding>(), MenuPr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().addMenuProvider(this)
-        getHostFragment<HomeFragment>()?.setTitle(getString(R.string.preview) + " - " +args.exercise.name)
+        getHostFragment<HomeFragment>()?.setTitle(getString(R.string.preview) + " - " +detailsViewModel.getCurrentExercise().name)
         viewModel.getCaptures().observe(viewLifecycleOwner) {
             binding.progress.isVisible = it.isLoading
             it.onSuccess { captures ->

@@ -1,6 +1,7 @@
 package com.diegulog.intellifit.di
 
 import com.diegulog.intellifit.ui.home.capture.CaptureViewModel
+import com.diegulog.intellifit.ui.home.details.DetailsViewModel
 import com.diegulog.intellifit.ui.home.exercise.ExerciseViewModel
 import com.diegulog.intellifit.ui.home.training.TrainingViewModel
 import com.diegulog.intellifit.ui.login.LoginViewModel
@@ -14,4 +15,6 @@ val viewModelModule = module {
     viewModel { ExerciseViewModel( get(), get(), get()) }
     viewModel { LoginViewModel( get(), get(), get()) }
     viewModel { TrainingViewModel( get()) }
+    viewModel { DetailsViewModel() }
+
 }

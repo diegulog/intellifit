@@ -39,7 +39,7 @@ class TrainingFragment : BaseFragment<FragmentTrainingBinding>() {
         binding.refresh.setOnRefreshListener { loadData()  }
         loadData()
         adapter.setOnClickListener(object : BaseAdapter.OnClickListener<Training>{
-            override fun onClick(item: Training) {
+            override fun onClick(position:Int, item: Training) {
                 val direction = TrainingFragmentDirections.actionTrainingFragmentToDetailsFragment(item)
                 Navigation.findNavController(view).navigate(direction)
             }

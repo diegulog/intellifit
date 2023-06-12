@@ -15,6 +15,7 @@ class DetailsAdapter: BaseAdapter<Exercise, ItemExerciseBinding>()  {
         item?.let {
             binding.title.text = item.name
             binding.image.load(item.urlImage)
+            binding.description.text = item.description
             binding.secondaryText.text = "${item.repeat} ${binding.root.context.getString(R.string.reps)}"
         }
     }

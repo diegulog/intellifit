@@ -35,5 +35,7 @@ data class Exercise(
     var trainingId: String,
 
     @SerializedName("repeat")
-    var repeat: Int
+    var repeat: Int,
+
+    var showDescription:Boolean = false
 ): BaseEntity()

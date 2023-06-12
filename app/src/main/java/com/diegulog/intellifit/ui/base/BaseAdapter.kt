@@ -19,7 +19,7 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
     @CallSuper
     override fun onBindViewHolder(holder: Holder<VB>, position: Int) {
         holder.itemView.setOnClickListener {
-            listener?.onClick(items[position])
+            listener?.onClick(position, items[position])
         }
         onBind(holder.binding, items[position], position)
     }
@@ -46,7 +46,7 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
     protected abstract fun inflateViewBinding(inflater: LayoutInflater, parent: ViewGroup): VB
 
     interface OnClickListener<T> {
-        fun onClick(item: T)
+        fun onClick(position:Int, item: T)
     }
 
     class Holder<T : ViewBinding>(val binding: T) : RecyclerView.ViewHolder(binding.root)
