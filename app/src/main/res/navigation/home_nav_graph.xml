@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/TrainingFragment">
+
+    <fragment
+        android:id="@+id/TrainingFragment"
+        android:name="com.diegulog.intellifit.ui.home.training.TrainingFragment"
+        android:label="@string/tranings"
+        tools:layout="@layout/fragment_training">
+
+        <action
+            android:id="@+id/action_TrainingFragment_to_detailsFragment"
+            app:destination="@id/DetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CaptureFragment"
+        android:name="com.diegulog.intellifit.ui.home.capture.CaptureFragment"
+        android:label="@string/camera_fragment_label"
+        tools:layout="@layout/fragment_capture">
+
+        <action
+            android:id="@+id/action_CaptureFragment_to_VideoPreviewFragment"
+            app:destination="@id/VideoPreviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/VideoPreviewFragment"
+        android:name="com.diegulog.intellifit.ui.home.preview.VideoPreviewFragment"
+        android:label="Select Capture"
+        tools:layout="@layout/fragment_video_preview">
+    </fragment>
+
+    <fragment
+        android:id="@+id/ExerciseFragment"
+        android:name="com.diegulog.intellifit.ui.home.exercise.ExerciseFragment"
+        android:label="Exercise"
+        tools:layout="@layout/fragment_exercise">
+
+        <action
+            android:id="@+id/action_ExerciseFragment_to_CaptureFragment"
+            app:destination="@id/CaptureFragment" />
+        <action
+            android:id="@+id/action_ExerciseFragment_to_VideoPreviewFragment"
+            app:destination="@id/VideoPreviewFragment" />
+        <action
+            android:id="@+id/action_ExerciseFragment_to_RestFragment"
+            app:destination="@id/RestFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/DetailsFragment"
+        android:name="com.diegulog.intellifit.ui.home.details.DetailsFragment"
+        android:label=""
+        tools:layout="@layout/fragment_datails">
+        <argument
+            android:name="training"
+            app:argType="com.diegulog.intellifit.domain.entity.Training" />
+        <action
+            android:id="@+id/action_DetailsFragment_to_ExerciseFragment"
+            app:destination="@id/ExerciseFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/RestFragment"
+        android:name="com.diegulog.intellifit.ui.home.exercise.RestFragment"
+        android:label="Rest"
+        tools:layout="@layout/fragment_rest">
+        <action
+            android:id="@+id/action_RestFragment_to_ExerciseFragment"
+            app:destination="@id/ExerciseFragment" />
+        <action
+            android:id="@+id/action_RestFragment_to_DetailsFragment"
+            app:destination="@id/DetailsFragment" />
+    </fragment>
+
+
+</navigation>

@@ -23,6 +23,8 @@ inline val <R> ResultOf<R>.isSuccessful: Boolean
 inline val <R> ResultOf<R>.isFailure: Boolean
     get() = this is ResultOf.Failure
 
+inline val <R> ResultOf<R>.isLoading: Boolean
+    get() = this is ResultOf.Loading
 /**
  * @return the value or null if it is a Result.Failure
  */

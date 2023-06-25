@@ -1,9 +1,29 @@
 package com.diegulog.intellifit.domain.entity
 
+import com.google.gson.annotations.SerializedName
+import java.util.UUID
+
 data class Capture(
-    val id: String,
-    val persons: List<Person>,
+    @SerializedName("id")
+    var id: String = UUID.randomUUID().toString(),
+
+    @SerializedName("samples")
+    val samples: List<Sample>,
+
+    @SerializedName("videoPath")
     val videoPath: String,
-    val moveType: MoveType,
-    val timestamp: Long = System.currentTimeMillis()
-)
+
+    @SerializedName("moveType")
+    var moveType: MoveType,
+
+    @SerializedName("timestamp")
+    val timestamp: Long = System.currentTimeMillis(),
+
+    @SerializedName("exerciseId")
+    var exerciseId: String,
+
+    @SerializedName("modelId")
+    var modelId: String
+
+
+) : BaseEntity()

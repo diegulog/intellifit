@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.diegulog.intellifit.movenet.tracker
 
-import com.diegulog.intellifit.domain.entity.Person
+import com.diegulog.intellifit.domain.entity.Sample
 
 data class Track(
-    val person: Person,
+    val sample: Sample,
     val lastTimestamp: Long
 )

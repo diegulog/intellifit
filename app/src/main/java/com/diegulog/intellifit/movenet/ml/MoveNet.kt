@@ -46,7 +46,6 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         private const val CPU_NUM_THREADS = 4
 
         // Parameters that control how large crop region should be expanded from previous frames'
-        // body keypoints.
         private const val TORSO_EXPANSION_RATIO = 1.9f
         private const val BODY_EXPANSION_RATIO = 1.2f
 
@@ -58,7 +57,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         fun create(context: Context, device: Device, modelType: ModelType): MoveNet {
             val options = Interpreter.Options()
             var gpuDelegate: GpuDelegate? = null
-            options.setNumThreads(CPU_NUM_THREADS)
+            options.numThreads = CPU_NUM_THREADS
             when (device) {
                 Device.CPU -> {
                 }
@@ -66,7 +65,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
                     gpuDelegate = GpuDelegate()
                     options.addDelegate(gpuDelegate)
                 }
-                Device.NNAPI -> options.setUseNNAPI(true)
+                Device.NNAPI -> options.useNNAPI = true
             }
             return MoveNet(
                 Interpreter(
@@ -81,7 +80,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         }
 
         // default to lightning.
-        fun create(context: Context, device: Device): MoveNet =
+        fun create(context: Context, device: Device = Device.CPU): MoveNet =
             create(context, device, ModelType.Lightning)
     }
 
@@ -91,7 +90,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
     private val inputHeight = interpreter.getInputTensor(0).shape()[2]
     private var outputShape: IntArray = interpreter.getOutputTensor(0).shape()
 
-    override fun estimatePoses(bitmap: Bitmap): List<Person> {
+    override fun estimatePoses(bitmap: Bitmap): List<Sample> {
         val inferenceStartTimeNanos = SystemClock.elapsedRealtimeNanos()
         if (cropRegion == null) {
             cropRegion = initRectF(bitmap.width, bitmap.height)
@@ -166,7 +165,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         }
         lastInferenceTimeNanos =
             SystemClock.elapsedRealtimeNanos() - inferenceStartTimeNanos
-        return listOf(Person(keyPoints = keyPoints, score = totalScore / numKeyPoints))
+        return listOf(Sample(keyPoints = keyPoints, score = totalScore / numKeyPoints, width = bitmap.width, height = bitmap.height))
     }
 
     override fun lastInferenceTimeNanos(): Long = lastInferenceTimeNanos
