@@ -1,6 +1,6 @@
 # IntelliFit
 
-IntelliFit, una aplicación móvil para guiar a los usuarios en la ejecución correcta de ejercicios físicos utilizando inteligencia artificial y técnicas de detección de movimiento para analizar y proporcionar retroalimentación en tiempo real sobre la postura y ejecución de los ejercicios.
+Aplicación android para guiar a los usuarios en la ejecución correcta de ejercicios físicos utilizando inteligencia artificial y técnicas de detección de movimiento para analizar y proporcionar retroalimentación en tiempo real sobre la postura y ejecución de los ejercicios.
 
 La arquitectura de la aplicación esta basada en el patrón MVVM (Model-View-ViewModel) de Android, el cual permite separar la lógica de la vista y facilita la creación de aplicaciones escalables y mantenibles.
 
