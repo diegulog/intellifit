@@ -34,7 +34,10 @@ https://www.figma.com/proto/lC8z8321CqZDh4YgVTmJ2D/IntelliFit?page-id=53798%3A27
 
 ## Probar la aplicación
 
-Todas las llamadas a la API estan simuladas, necesita ejecutar la variante de compilacion DEMO.
+Ejecutar la aplicación con la variante de compilación demoDebug esta variante simula todas las consultas al backend mediante un interceptor.
+Usuarios de prueba:
+user@gmail.com/12345
+admin@gmail.com/12345
 
 ## License
 
