@@ -64,14 +64,8 @@ fun Capture.parseCsv(context: Context) {
     val nameFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS", Locale.ROOT)
     val file = File(
         context.filesDir.path + File.separator + this.modelId,
-        "${this.moveType.name}-${
-            nameFormat.format(
-                Date()
-            )
-        }.csv"
-    )
-    file.parentFile?.let {
-        Files.createDirectories(it.toPath())
-    }
+        "${this.moveType.name}-${nameFormat.format(Date())}.csv")
+
+    file.parentFile?.let { Files.createDirectories(it.toPath()) }
     file.writeText(builder.toString())
 }
