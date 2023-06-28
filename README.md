@@ -22,7 +22,7 @@ La arquitectura se dividirá en capas, lo que permitirá una fácil gestión y m
 </p>
 
 
-## Prototipo horizontal de alta fidelidad 
+## Prototipo de alta fidelidad 
 
 https://www.figma.com/proto/lC8z8321CqZDh4YgVTmJ2D/IntelliFit?page-id=53798%3A27459
 
