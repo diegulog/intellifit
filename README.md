@@ -1,10 +1,11 @@
 # IntelliFit
 
-Aplicación android para guiar a los usuarios en la ejecución correcta de ejercicios físicos utilizando inteligencia artificial y técnicas de detección de movimiento para analizar y proporcionar retroalimentación en tiempo real sobre la postura y ejecución de los ejercicios.
+Android application to guide users in the correct execution of physical exercises using artificial intelligence and motion detection techniques to analyze and provide real-time feedback on posture and exercise execution.
 
-La arquitectura de la aplicación esta basada en el patrón MVVM (Model-View-ViewModel) de Android, el cual permite separar la lógica de la vista y facilita la creación de aplicaciones escalables y mantenibles.
+The application architecture is based on the Android MVVM (Model-View-ViewModel) pattern, which allows separating the logic from the view and facilitates the creation of scalable and maintainable applications.
 
-## Prototipo de alta fidelidad 
+
+## High fidelity prototype
 
 https://www.figma.com/proto/lC8z8321CqZDh4YgVTmJ2D/IntelliFit?page-id=53798%3A27459
 
@@ -14,11 +15,14 @@ https://www.figma.com/proto/lC8z8321CqZDh4YgVTmJ2D/IntelliFit?page-id=53798%3A27
 ![](https://github.com/diegulog/intellifit/blob/master/demo.gif?raw=true)
 
 
-## Probar la aplicación
+## Test
 
-Ejecutar la aplicación con la variante de compilación demoDebug esta variante simula todas las consultas al backend mediante un interceptor.
-Usuarios de prueba:
+Run the application with the demoDebug build variant this variant simulates all queries to the backend via an interceptor.
+
+Test users:
+
 user@gmail.com/12345
+
 admin@gmail.com/12345
 
 ## License
